@@ -1,0 +1,188 @@
+{
+  "entities": {
+    "blogPost": {
+      "title": "Blog Post",
+      "description": "A news article or blog post for the school website",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string", "description": "The title of the post" },
+        "excerpt": { "type": "string", "description": "A short summary of the post" },
+        "content": { "type": "string", "description": "The full content of the post" },
+        "date": { "type": "string", "format": "date-time", "description": "Publication date" },
+        "author": { "type": "string", "description": "Name of the author" },
+        "category": { "type": "string", "description": "Category of the post" },
+        "image": { "type": "string", "description": "URL of the featured image" },
+        "authorUid": { "type": "string", "description": "UID of the user who created the post" }
+      },
+      "required": ["title", "excerpt", "content", "date", "author", "category", "image", "authorUid"]
+    },
+    "galleryImage": {
+      "title": "Gallery Image",
+      "description": "An image for the school gallery",
+      "type": "object",
+      "properties": {
+        "src": { "type": "string", "description": "URL of the image" },
+        "title": { "type": "string", "description": "Title/Caption of the image" },
+        "category": { "type": "string", "description": "Category of the image" },
+        "uploadedBy": { "type": "string", "description": "UID of the user who uploaded the image" }
+      },
+      "required": ["src", "title", "category", "uploadedBy"]
+    },
+    "contactMessage": {
+      "title": "Contact Message",
+      "description": "A message sent via the contact form",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "description": "Name of the sender" },
+        "email": { "type": "string", "format": "email", "description": "Email of the sender" },
+        "subject": { "type": "string", "description": "Subject of the message" },
+        "message": { "type": "string", "description": "The message content" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "When the message was sent" }
+      },
+      "required": ["name", "email", "subject", "message", "createdAt"]
+    },
+    "user": {
+      "title": "User",
+      "description": "User profile and role information",
+      "type": "object",
+      "properties": {
+        "email": { "type": "string", "format": "email" },
+        "displayName": { "type": "string" },
+        "role": { "type": "string", "enum": ["admin", "editor", "teacher", "parent", "student"] },
+        "photoURL": { "type": "string" },
+        "status": { "type": "string", "enum": ["active", "blocked"] }
+      },
+      "required": ["email", "role"]
+    },
+    "student": {
+      "title": "Student",
+      "description": "Student specific information",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "birthDate": { "type": "string", "format": "date" },
+        "contact": { "type": "string" },
+        "parentUid": { "type": "string" },
+        "status": { "type": "string", "enum": ["active", "blocked"] }
+      },
+      "required": ["name", "birthDate", "parentUid"]
+    },
+    "teacher": {
+      "title": "Teacher",
+      "description": "Teacher specific information",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "subjects": { "type": "array", "items": { "type": "string" } },
+        "status": { "type": "string", "enum": ["active", "blocked"] }
+      },
+      "required": ["name", "email"]
+    },
+    "academicYear": {
+      "title": "Academic Year",
+      "description": "Definition of a school year",
+      "type": "object",
+      "properties": {
+        "year": { "type": "string" },
+        "status": { "type": "string", "enum": ["open", "closed"] }
+      },
+      "required": ["year", "status"]
+    },
+    "class": {
+      "title": "Class",
+      "description": "A school class/turma",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "academicYearId": { "type": "string" },
+        "grade": { "type": "string" }
+      },
+      "required": ["name", "academicYearId"]
+    },
+    "subject": {
+      "title": "Subject",
+      "description": "A school subject/disciplina",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "workload": { "type": "number" }
+      },
+      "required": ["name", "workload"]
+    },
+    "grade": {
+      "title": "Grade",
+      "description": "Student grade for a subject",
+      "type": "object",
+      "properties": {
+        "studentId": { "type": "string" },
+        "subjectId": { "type": "string" },
+        "classId": { "type": "string" },
+        "value": { "type": "number" },
+        "period": { "type": "string" },
+        "updatedBy": { "type": "string" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["studentId", "subjectId", "classId", "value", "period"]
+    },
+    "attendance": {
+      "title": "Attendance",
+      "description": "Student attendance record",
+      "type": "object",
+      "properties": {
+        "studentId": { "type": "string" },
+        "classId": { "type": "string" },
+        "date": { "type": "string", "format": "date" },
+        "status": { "type": "string", "enum": ["present", "absent"] },
+        "updatedBy": { "type": "string" }
+      },
+      "required": ["studentId", "classId", "date", "status"]
+    }
+  },
+  "firestore": {
+    "/blogPosts/{postId}": {
+      "schema": "blogPost",
+      "description": "Collection of blog posts"
+    },
+    "/galleryImages/{imageId}": {
+      "schema": "galleryImage",
+      "description": "Collection of gallery images"
+    },
+    "/contactMessages/{messageId}": {
+      "schema": "contactMessage",
+      "description": "Collection of contact form submissions"
+    },
+    "/users/{userId}": {
+      "schema": "user",
+      "description": "User profiles and roles"
+    },
+    "/students/{studentId}": {
+      "schema": "student",
+      "description": "Student records"
+    },
+    "/teachers/{teacherId}": {
+      "schema": "teacher",
+      "description": "Teacher records"
+    },
+    "/academicYears/{yearId}": {
+      "schema": "academicYear",
+      "description": "Academic years"
+    },
+    "/classes/{classId}": {
+      "schema": "class",
+      "description": "School classes"
+    },
+    "/subjects/{subjectId}": {
+      "schema": "subject",
+      "description": "School subjects"
+    },
+    "/grades/{gradeId}": {
+      "schema": "grade",
+      "description": "Student grades"
+    },
+    "/attendance/{attendanceId}": {
+      "schema": "attendance",
+      "description": "Attendance records"
+    }
+  }
+}
