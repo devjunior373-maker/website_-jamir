@@ -1,22 +1,29 @@
-import { createClient } from '@supabase/supabase-js';
+// Supabase deactivated - using hardcoded data
+export const USE_MOCK_DATA = true;
+export const isConfigured = false;
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
-
-// Check if Supabase is properly configured
-const isConfigured = !!supabaseUrl && !!supabaseAnonKey && supabaseUrl !== 'YOUR_SUPABASE_URL';
-
-// Export a flag to easily switch between Supabase and Mock Data
-export const USE_MOCK_DATA = !isConfigured;
-
-if (USE_MOCK_DATA) {
-  console.info('Using Mock Data: Supabase is not configured or deactivated.');
-}
-
-export const supabase = createClient(
-  supabaseUrl || 'https://missing-config.supabase.co',
-  supabaseAnonKey || 'missing-key'
-);
-
-export { isConfigured };
-
+// Dummy client to prevent import errors in the rest of the application
+export const supabase = {
+  from: () => ({
+    select: () => ({
+      order: () => ({
+        limit: () => Promise.resolve({ data: [], error: null }),
+        then: () => Promise.resolve({ data: [], error: null })
+      }),
+      eq: () => Promise.resolve({ data: [], error: null })
+    })
+  }),
+  auth: {
+    onAuthStateChange: () => ({ data: { subscription: { unsubscribe: () => {} } } }),
+    getSession: () => Promise.resolve({ data: { session: null } }),
+    getUser: () => Promise.resolve({ data: { user: null } }),
+    signInWithPassword: () => Promise.resolve({ error: new Error('Database disabled') }),
+    signOut: () => Promise.resolve({ error: null })
+  },
+  channel: () => ({
+    on: () => ({
+      subscribe: () => ({})
+    })
+  }),
+  removeChannel: () => {}
+} as any;

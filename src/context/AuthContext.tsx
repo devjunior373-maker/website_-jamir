@@ -24,37 +24,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    let mounted = true;
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (!mounted) return;
-
-      const currentUser = session?.user ?? null;
-      setUser(currentUser);
-      
-      if (currentUser) {
-        fetchAdminStatus(currentUser.id, currentUser.email).catch(console.error);
-      } else {
-        setIsAdmin(false);
-        setLoading(false);
-      }
-    });
-
-    // Handle initial session separately to avoid double fetch if possible
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (!mounted) return;
-      if (session?.user) {
-        setUser(session.user);
-        fetchAdminStatus(session.user.id, session.user.email).catch(console.error);
-      } else {
-        setLoading(false);
-      }
-    });
-
-    return () => {
-      mounted = false;
-      subscription.unsubscribe();
-    };
+    // Modo offline/hardcode: Desativamos a escuta do Supabase
+    setLoading(false);
+    setUser(null);
+    setIsAdmin(false);
   }, []);
 
   const fetchAdminStatus = async (userId: string, email?: string) => {

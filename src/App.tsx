@@ -7,7 +7,6 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { AuthProvider } from './context/AuthContext';
-import { SupabaseConfigGate } from './components/SupabaseConfigGate';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import SchoolHeader from './components/SchoolHeader';
 import Hero from './components/Hero';
@@ -72,13 +71,11 @@ function AppContent() {
 export default function App() {
   return (
     <ErrorBoundary>
-      <SupabaseConfigGate>
-        <AuthProvider>
-          <Router>
-            <AppContent />
-          </Router>
-        </AuthProvider>
-      </SupabaseConfigGate>
+      <AuthProvider>
+        <Router>
+          <AppContent />
+        </Router>
+      </AuthProvider>
     </ErrorBoundary>
   );
 }
