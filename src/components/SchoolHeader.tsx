@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { 
   GraduationCap, 
@@ -11,14 +11,24 @@ import {
   School,
   LayoutDashboard
 } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { cn } from '@/src/lib/utils';
 import { useAuth } from '../context/AuthContext';
 
 export default function SchoolHeader() {
   const { user, isEditor } = useAuth();
+  const location = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const isHome = location.pathname === '/';
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 50);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const menuItems = [
     { name: 'Home', href: '/', type: 'link' },
@@ -28,7 +38,14 @@ export default function SchoolHeader() {
   ];
 
   return (
-    <header className="w-full bg-white border-b border-gray-100 sticky top-0 z-50">
+    <header className={cn(
+      "w-full z-50 transition-all duration-300",
+      isScrolled 
+        ? "sticky top-0 bg-white shadow-lg py-2 border-b border-gray-100" 
+        : isHome 
+          ? "absolute top-0 bg-transparent py-4" 
+          : "sticky top-0 bg-white border-b border-gray-100 py-3"
+    )}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
           
@@ -37,10 +54,18 @@ export default function SchoolHeader() {
             <img 
               src="/logo.png" 
               alt="Logo Complexo Jamir" 
-              className="h-16 w-auto object-contain"
+              className={cn(
+                "h-16 w-auto object-contain transition-all",
+                isScrolled ? "h-14" : "h-16"
+              )}
             />
             <div className="flex flex-col">
-              <span className="text-[#2E7D32] font-bold text-xl leading-none">COMPLEXO JAMIR</span>
+              <span className={cn(
+                "font-bold text-xl leading-none transition-colors",
+                (isHome && !isScrolled) ? "text-white" : "text-[#2E7D32]"
+              )}>
+                COMPLEXO JAMIR
+              </span>
             </div>
           </Link>
 
@@ -55,7 +80,9 @@ export default function SchoolHeader() {
                   to={item.href || '/'}
                   className={cn(
                     "flex items-center gap-1 px-4 py-2 text-sm font-semibold transition-colors rounded-[5px]",
-                    "text-gray-600 hover:text-[#2E7D32] hover:bg-green-50"
+                    (isHome && !isScrolled) 
+                      ? "text-white hover:bg-white/10" 
+                      : "text-gray-600 hover:text-[#2E7D32] hover:bg-green-50"
                   )}
                 >
                   {item.name}
@@ -87,7 +114,12 @@ export default function SchoolHeader() {
 
           {/* Mobile Menu Toggle */}
           <button 
-            className="lg:hidden p-2 text-gray-600 hover:bg-gray-100 rounded-[5px]"
+            className={cn(
+              "lg:hidden p-2 rounded-[5px] transition-colors",
+              (isHome && !isScrolled) 
+                ? "text-white hover:bg-white/10" 
+                : "text-gray-600 hover:bg-gray-100"
+            )}
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           >
             {isMobileMenuOpen ? <X size={28} /> : <Menu size={28} />}

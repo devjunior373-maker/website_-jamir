@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 
 export default function Hero() {
   return (
-    <section className="relative min-h-[80vh] flex items-center justify-center overflow-hidden">
+    <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden pt-32 pb-20">
       {/* Background Image with Overlay */}
       <div className="absolute inset-0 z-0">
         <img
