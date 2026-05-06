@@ -19,7 +19,8 @@ import {
   Bell,
   Settings,
   User as UserIcon,
-  ChevronDown
+  ChevronDown,
+  GraduationCap
 } from 'lucide-react';
 
 import { AdminTab } from '../components/admin/AdminTab';
@@ -31,10 +32,11 @@ import { ProfileModal } from '../components/admin/ProfileModal';
 export default function AdminDashboard() {
   const navigate = useNavigate();
   const { user, isAdmin, isEditor } = useAuth();
-  const [activeTab, setActiveTab] = useState<'posts' | 'gallery' | 'messages'>('posts');
+  const [activeTab, setActiveTab] = useState<'posts' | 'gallery' | 'messages' | 'courses'>('posts');
   const [posts, setPosts] = useState<any[]>([]);
   const [gallery, setGallery] = useState<any[]>([]);
   const [messages, setMessages] = useState<any[]>([]);
+  const [courses, setCourses] = useState<any[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<any>(null);
   const [deleteConfirm, setDeleteConfirm] = useState<{ id: string, table: string } | null>(null);
@@ -50,11 +52,14 @@ export default function AdminDashboard() {
 
     // Initial Fetch
     const fetchData = async () => {
-      const { data: postsData } = await supabase.from('blog_posts').select('*').order('date', { ascending: false });
+      const { data: postsData } = await supabase.from('blog_posts').select('*').order('created_at', { ascending: false });
       if (postsData) setPosts(postsData);
 
       const { data: galleryData } = await supabase.from('gallery_images').select('*').order('created_at', { ascending: false });
       if (galleryData) setGallery(galleryData);
+
+      const { data: coursesData } = await supabase.from('courses').select('*').order('nome');
+      if (coursesData) setCourses(coursesData);
 
       if (isEditor) {
         const { data: messagesData } = await supabase.from('contact_messages').select('*').order('created_at', { ascending: false });
@@ -67,11 +72,13 @@ export default function AdminDashboard() {
     // Subscriptions
     const postsSub = supabase.channel('blog_posts_changes').on('postgres_changes', { event: '*', schema: 'public', table: 'blog_posts' }, () => fetchData()).subscribe();
     const gallerySub = supabase.channel('gallery_images_changes').on('postgres_changes', { event: '*', schema: 'public', table: 'gallery_images' }, () => fetchData()).subscribe();
+    const coursesSub = supabase.channel('courses_changes').on('postgres_changes', { event: '*', schema: 'public', table: 'courses' }, () => fetchData()).subscribe();
     const messagesSub = supabase.channel('contact_messages_changes').on('postgres_changes', { event: '*', schema: 'public', table: 'contact_messages' }, () => fetchData()).subscribe();
 
     return () => {
       supabase.removeChannel(postsSub);
       supabase.removeChannel(gallerySub);
+      supabase.removeChannel(coursesSub);
       supabase.removeChannel(messagesSub);
     };
   }, [user, isEditor]);
@@ -98,6 +105,7 @@ export default function AdminDashboard() {
       items: [
         { id: 'posts', label: 'Notícias', icon: <FileText size={20} /> },
         { id: 'gallery', label: 'Galeria', icon: <ImageIcon size={20} /> },
+        { id: 'courses', label: 'Cursos', icon: <GraduationCap size={20} /> },
       ]
     },
     {
@@ -230,10 +238,10 @@ export default function AdminDashboard() {
             <h2 className="text-3xl font-black text-gray-900 uppercase tracking-tight">
               {currentTabLabel}
             </h2>
-            {['posts', 'gallery'].includes(activeTab) && (
+            {['posts', 'gallery', 'courses'].includes(activeTab) && (
               <button 
                 onClick={() => { 
-                  setEditingItem({ type: activeTab === 'posts' ? 'post' : 'image' }); 
+                  setEditingItem({ type: activeTab }); 
                   setIsModalOpen(true); 
                   setSuccessMessage(null); 
                   setErrorMessage(null); 
@@ -282,6 +290,31 @@ export default function AdminDashboard() {
                   />
                 )}
 
+                {activeTab === 'courses' && (
+                  <div className="p-8">
+                    <div className="grid grid-cols-1 gap-4">
+                      {courses.filter(c => c.nome.toLowerCase().includes(searchQuery.toLowerCase())).map((course) => (
+                        <div key={course.id} className="flex items-center justify-between p-4 bg-gray-50 border border-gray-100 rounded-[5px] hover:bg-white hover:shadow-md transition-all">
+                          <div className="flex items-center gap-4">
+                            <div className="w-10 h-10 bg-green-100 text-[#2E7D32] rounded-[5px] flex items-center justify-center">
+                              <GraduationCap size={20} />
+                            </div>
+                            <div>
+                              <p className="font-bold text-gray-900 uppercase">{course.nome}</p>
+                              <p className="text-xs text-gray-500">Propina: {new Intl.NumberFormat('pt-AO', { style: 'currency', currency: 'AOA' }).format(course.propina)}</p>
+                            </div>
+                          </div>
+                          <div className="flex gap-2">
+                            <button onClick={() => { setEditingItem(course); setIsModalOpen(true); }} className="p-2 text-blue-600 hover:bg-blue-50 rounded-[5px]"><Edit size={18} /></button>
+                            <button onClick={() => setDeleteConfirm({ id: course.id, table: 'courses' })} className="p-2 text-red-600 hover:bg-red-50 rounded-[5px]"><Trash2 size={18} /></button>
+                          </div>
+                        </div>
+                      ))}
+                      {courses.length === 0 && <p className="text-center py-10 text-gray-400">Nenhum curso cadastrado.</p>}
+                    </div>
+                  </div>
+                )}
+
                 {activeTab === 'messages' && (
                   <MessagesSection 
                     messages={messages}
@@ -313,7 +346,11 @@ export default function AdminDashboard() {
           >
             <div className="flex justify-between items-center mb-8">
               <h2 className="text-2xl font-black uppercase tracking-tight">
-                {editingItem?.id ? 'Editar' : 'Novo'} {activeTab === 'posts' ? 'Post' : 'Item da Galeria'}
+                {editingItem?.id ? 'Editar' : 'Novo'} {
+                  activeTab === 'posts' ? 'Post' : 
+                  activeTab === 'gallery' ? 'Item da Galeria' : 
+                  'Curso'
+                }
               </h2>
               <button onClick={() => setIsModalOpen(false)}><X size={24} /></button>
             </div>
@@ -321,21 +358,26 @@ export default function AdminDashboard() {
             <form className="space-y-6" onSubmit={async (e) => {
               e.preventDefault();
               const formData = new FormData(e.currentTarget);
-              const data: any = Object.fromEntries(formData.entries());
+              const rawData: any = Object.fromEntries(formData.entries());
               
               try {
-                const table = activeTab === 'posts' ? 'blog_posts' : 'gallery_images';
+                const table = activeTab === 'posts' ? 'blog_posts' : 
+                             activeTab === 'gallery' ? 'gallery_images' : 
+                             'courses';
                 
+                // Tratar conversão de números para a tabela de cursos
+                if (activeTab === 'courses') {
+                  rawData.preco_matricula = parseFloat(rawData.preco_matricula);
+                  rawData.preco_confirmacao = parseFloat(rawData.preco_confirmacao);
+                  rawData.propina = parseFloat(rawData.propina);
+                  rawData.multa = parseFloat(rawData.multa) || 0;
+                }
+
                 if (editingItem?.id) {
-                  const { error } = await supabase.from(table).update(data).eq('id', editingItem.id);
+                  const { error } = await supabase.from(table).update(rawData).eq('id', editingItem.id);
                   if (error) throw error;
                 } else {
-                  const { error } = await supabase.from(table).insert([{ 
-                    ...data, 
-                    author: user?.user_metadata?.display_name || 'Admin',
-                    author_id: user?.id,
-                    date: new Date().toISOString()
-                  }]);
+                  const { error } = await supabase.from(table).insert([rawData]);
                   if (error) throw error;
                 }
                 setIsModalOpen(false);
@@ -350,25 +392,15 @@ export default function AdminDashboard() {
                 <>
                   <div>
                     <label className="block text-xs font-black text-gray-400 uppercase mb-2">Título</label>
-                    <input name="title" type="text" defaultValue={editingItem?.title} className="w-full bg-gray-50 border border-gray-200 rounded-[5px] px-4 py-3 focus:outline-none focus:border-[#2E7D32]" required />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-black text-gray-400 uppercase mb-2">Resumo</label>
-                    <textarea name="excerpt" defaultValue={editingItem?.excerpt} className="w-full bg-gray-50 border border-gray-200 rounded-[5px] px-4 py-3 focus:outline-none focus:border-[#2E7D32]" rows={2} required />
+                    <input name="titulo" type="text" defaultValue={editingItem?.titulo} className="w-full bg-gray-50 border border-gray-200 rounded-[5px] px-4 py-3 focus:outline-none focus:border-[#2E7D32]" required />
                   </div>
                   <div>
                     <label className="block text-xs font-black text-gray-400 uppercase mb-2">Conteúdo</label>
-                    <textarea name="content" defaultValue={editingItem?.content} className="w-full bg-gray-50 border border-gray-200 rounded-[5px] px-4 py-3 focus:outline-none focus:border-[#2E7D32]" rows={4} required />
+                    <textarea name="conteudo" defaultValue={editingItem?.conteudo} className="w-full bg-gray-50 border border-gray-200 rounded-[5px] px-4 py-3 focus:outline-none focus:border-[#2E7D32]" rows={6} required />
                   </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-xs font-black text-gray-400 uppercase mb-2">Categoria</label>
-                      <input name="category" type="text" defaultValue={editingItem?.category} className="w-full bg-gray-50 border border-gray-200 rounded-[5px] px-4 py-3 focus:outline-none focus:border-[#2E7D32]" required />
-                    </div>
-                    <div>
-                      <label className="block text-xs font-black text-gray-400 uppercase mb-2">URL da Imagem</label>
-                      <input name="image" type="text" defaultValue={editingItem?.image} className="w-full bg-gray-50 border border-gray-200 rounded-[5px] px-4 py-3 focus:outline-none focus:border-[#2E7D32]" required />
-                    </div>
+                  <div>
+                    <label className="block text-xs font-black text-gray-400 uppercase mb-2">URL da Imagem</label>
+                    <input name="imagem" type="text" defaultValue={editingItem?.imagem} className="w-full bg-gray-50 border border-gray-200 rounded-[5px] px-4 py-3 focus:outline-none focus:border-[#2E7D32]" />
                   </div>
                 </>
               )}
@@ -377,17 +409,38 @@ export default function AdminDashboard() {
                 <>
                   <div>
                     <label className="block text-xs font-black text-gray-400 uppercase mb-2">Título da Imagem</label>
-                    <input name="title" type="text" defaultValue={editingItem?.title} className="w-full bg-gray-50 border border-gray-200 rounded-[5px] px-4 py-3 focus:outline-none focus:border-[#2E7D32]" required />
+                    <input name="titulo" type="text" defaultValue={editingItem?.titulo} className="w-full bg-gray-50 border border-gray-200 rounded-[5px] px-4 py-3 focus:outline-none focus:border-[#2E7D32]" required />
                   </div>
                   <div>
                     <label className="block text-xs font-black text-gray-400 uppercase mb-2">URL da Imagem</label>
-                    <input name="src" type="text" defaultValue={editingItem?.src} className="w-full bg-gray-50 border border-gray-200 rounded-[5px] px-4 py-3 focus:outline-none focus:border-[#2E7D32]" required />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-black text-gray-400 uppercase mb-2">Categoria</label>
-                    <input name="category" type="text" defaultValue={editingItem?.category} className="w-full bg-gray-50 border border-gray-200 rounded-[5px] px-4 py-3 focus:outline-none focus:border-[#2E7D32]" required />
+                    <input name="imagem" type="text" defaultValue={editingItem?.imagem} className="w-full bg-gray-50 border border-gray-200 rounded-[5px] px-4 py-3 focus:outline-none focus:border-[#2E7D32]" required />
                   </div>
                 </>
+              )}
+
+              {activeTab === 'courses' && (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="md:col-span-2">
+                    <label className="block text-xs font-black text-gray-400 uppercase mb-2">Nome do Curso</label>
+                    <input name="nome" type="text" defaultValue={editingItem?.nome} className="w-full bg-gray-50 border border-gray-200 rounded-[5px] px-4 py-3 focus:outline-none focus:border-[#2E7D32]" required />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-black text-gray-400 uppercase mb-2">Preço Matrícula</label>
+                    <input name="preco_matricula" type="number" step="0.01" defaultValue={editingItem?.preco_matricula} className="w-full bg-gray-50 border border-gray-200 rounded-[5px] px-4 py-3 focus:outline-none focus:border-[#2E7D32]" required />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-black text-gray-400 uppercase mb-2">Preço Confirmação</label>
+                    <input name="preco_confirmacao" type="number" step="0.01" defaultValue={editingItem?.preco_confirmacao} className="w-full bg-gray-50 border border-gray-200 rounded-[5px] px-4 py-3 focus:outline-none focus:border-[#2E7D32]" required />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-black text-gray-400 uppercase mb-2">Propina Mensal</label>
+                    <input name="propina" type="number" step="0.01" defaultValue={editingItem?.propina} className="w-full bg-gray-50 border border-gray-200 rounded-[5px] px-4 py-3 focus:outline-none focus:border-[#2E7D32]" required />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-black text-gray-400 uppercase mb-2">Multa Estimada</label>
+                    <input name="multa" type="number" step="0.01" defaultValue={editingItem?.multa || 0} className="w-full bg-gray-50 border border-gray-200 rounded-[5px] px-4 py-3 focus:outline-none focus:border-[#2E7D32]" />
+                  </div>
+                </div>
               )}
 
               <div className="flex justify-end gap-4 pt-6">

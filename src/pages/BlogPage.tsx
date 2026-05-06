@@ -1,40 +1,91 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { Calendar, User, ArrowRight, FileText } from 'lucide-react';
-import { supabase } from '../lib/supabase';
+import { USE_MOCK_DATA, supabase } from '../lib/supabase';
+
+const MOCK_POSTS = [
+  {
+    id: '1',
+    titulo: 'Início do Ano Letivo 2024/2025',
+    conteudo: 'Estamos preparados para receber nossos alunos com novas instalações e um corpo docente renovado. As aulas começam oficialmente no próximo mês.',
+    imagem: 'https://images.unsplash.com/photo-1523050335391-4b7f32994c6d?q=80&w=1000',
+    created_at: new Date().toISOString(),
+    publicado: true
+  },
+  {
+    id: '2',
+    titulo: 'Inauguração do Novo Laboratório de Informática',
+    conteudo: 'Equipado com a mais recente tecnologia, o novo laboratório permitirá aos alunos de engenharia práticas mais avançadas e projetos inovadores.',
+    imagem: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?q=80&w=1000',
+    created_at: new Date(Date.now() - 86400000 * 2).toISOString(),
+    publicado: true
+  },
+  {
+    id: '3',
+    titulo: 'Semana Cultural e Desportiva 2024',
+    conteudo: 'Preparem-se para uma semana cheia de talentos, competições e muita alegria. A participação de todos os alunos é fundamental.',
+    imagem: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?q=80&w=1000',
+    created_at: new Date(Date.now() - 86400000 * 5).toISOString(),
+    publicado: true
+  }
+];
 
 export default function BlogPage() {
   const [posts, setPosts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchPosts = async () => {
       setLoading(true);
-      const { data, error } = await supabase
-        .from('blog_posts')
-        .select('*')
-        .order('date', { ascending: false });
+      setError(null);
 
-      if (error) {
-        console.error('Error fetching posts:', error);
-      } else {
-        setPosts(data || []);
+      if (USE_MOCK_DATA) {
+        await new Promise(resolve => setTimeout(resolve, 800));
+        setPosts(MOCK_POSTS);
+        setLoading(false);
+        return;
       }
-      setLoading(false);
+
+      try {
+        const { data, error: supabaseError } = await supabase
+          .from('blog_posts')
+          .select('*')
+          .order('created_at', { ascending: false });
+
+        if (supabaseError) {
+          console.error('Supabase error:', supabaseError);
+          throw supabaseError;
+        } 
+        setPosts(data || []);
+      } catch (err: any) {
+        console.error('Connection error fetching posts:', err);
+        setError(err.message === 'Failed to fetch' 
+          ? 'Erro de conexão: Não foi possível alcançar o servidor do Supabase. Verifique a URL do projeto nas configurações.' 
+          : 'Houve um problema ao carregar as notícias.');
+      } finally {
+        setLoading(false);
+      }
     };
 
     fetchPosts();
 
-    // Subscribe to changes
-    const subscription = supabase
-      .channel('public:blog_posts')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'blog_posts' }, fetchPosts)
-      .subscribe();
+    // Subscribe to changes IF not using mock data
+    let subscription: any;
+    if (!USE_MOCK_DATA) {
+      subscription = supabase
+        .channel('public:blog_posts')
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'blog_posts' }, fetchPosts)
+        .subscribe();
+    }
 
     return () => {
-      supabase.removeChannel(subscription);
+      if (subscription) {
+        supabase.removeChannel(subscription);
+      }
     };
   }, []);
+
 
   return (
     <div className="min-h-screen bg-gray-50 pb-24">
@@ -62,7 +113,17 @@ export default function BlogPage() {
       <section className="max-w-7xl mx-auto px-4 -mt-12 relative z-20">
         {loading ? (
           <div className="flex justify-center py-20">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white"></div>
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#2E7D32]"></div>
+          </div>
+        ) : error ? (
+          <div className="bg-red-50 border border-red-100 p-8 rounded-[5px] text-center">
+            <p className="text-red-600 font-bold mb-4">{error}</p>
+            <button 
+              onClick={() => window.location.reload()}
+              className="bg-[#2E7D32] text-white px-6 py-2 rounded-[5px] font-bold"
+            >
+              Tentar Novamente
+            </button>
           </div>
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -75,10 +136,10 @@ export default function BlogPage() {
                 className="bg-white rounded-[5px] overflow-hidden shadow-xl border border-gray-100 flex flex-col md:flex-row group"
               >
                 <div className="md:w-2/5 relative overflow-hidden">
-                  {post.image ? (
+                  {post.imagem ? (
                     <img 
-                      src={post.image} 
-                      alt={post.title} 
+                      src={post.imagem} 
+                      alt={post.titulo} 
                       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                       referrerPolicy="no-referrer"
                     />
@@ -87,28 +148,19 @@ export default function BlogPage() {
                       <FileText className="text-gray-300" size={48} />
                     </div>
                   )}
-                  <div className="absolute top-4 left-4">
-                    <span className="bg-[#2E7D32] text-white text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-[5px] shadow-lg">
-                      {post.category}
-                    </span>
-                  </div>
                 </div>
                 <div className="md:w-3/5 p-8 flex flex-col">
                   <div className="flex items-center gap-4 text-xs text-gray-400 mb-4 font-bold uppercase tracking-wider">
                     <div className="flex items-center gap-1">
                       <Calendar size={14} className="text-[#2E7D32]" />
-                      {post.date}
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <User size={14} className="text-[#2E7D32]" />
-                      {post.author}
+                      {new Date(post.created_at).toLocaleDateString()}
                     </div>
                   </div>
                   <h2 className="text-2xl font-black text-gray-900 mb-4 leading-tight group-hover:text-[#2E7D32] transition-colors">
-                    {post.title}
+                    {post.titulo}
                   </h2>
-                  <p className="text-gray-500 text-sm leading-relaxed mb-6 flex-grow">
-                    {post.excerpt}
+                  <p className="text-gray-500 text-sm leading-relaxed mb-6 flex-grow line-clamp-3">
+                    {post.conteudo}
                   </p>
                   <button className="inline-flex items-center text-[#2E7D32] font-black text-sm uppercase tracking-widest group/btn">
                     Ler Artigo Completo

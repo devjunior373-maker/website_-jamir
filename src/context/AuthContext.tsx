@@ -24,30 +24,37 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Check active sessions and sets the user
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      const currentUser = session?.user ?? null;
-      setUser(currentUser);
-      if (currentUser) {
-        fetchAdminStatus(currentUser.id, currentUser.email);
-      } else {
-        setLoading(false);
-      }
-    });
+    let mounted = true;
 
-    // Listen for changes on auth state
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (!mounted) return;
+
       const currentUser = session?.user ?? null;
       setUser(currentUser);
+      
       if (currentUser) {
-        await fetchAdminStatus(currentUser.id, currentUser.email);
+        fetchAdminStatus(currentUser.id, currentUser.email).catch(console.error);
       } else {
         setIsAdmin(false);
         setLoading(false);
       }
     });
 
-    return () => subscription.unsubscribe();
+    // Handle initial session separately to avoid double fetch if possible
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!mounted) return;
+      if (session?.user) {
+        setUser(session.user);
+        fetchAdminStatus(session.user.id, session.user.email).catch(console.error);
+      } else {
+        setLoading(false);
+      }
+    });
+
+    return () => {
+      mounted = false;
+      subscription.unsubscribe();
+    };
   }, []);
 
   const fetchAdminStatus = async (userId: string, email?: string) => {

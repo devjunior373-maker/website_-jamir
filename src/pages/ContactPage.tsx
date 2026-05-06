@@ -20,11 +20,10 @@ export default function ContactPage() {
       const { error } = await supabase
         .from('contact_messages')
         .insert([{
-          name: formData.name,
+          nome: formData.name,
           email: formData.email,
-          subject: formData.subject,
-          message: formData.message,
-          status: 'new'
+          tipo: formData.subject,
+          mensagem: formData.message
         }]);
 
       if (error) throw error;

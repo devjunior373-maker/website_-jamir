@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { motion } from 'motion/react';
 import { BookOpen, ArrowRight, GraduationCap, Loader2, Coins, Receipt, CreditCard } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { supabase } from '../lib/supabase';
+import { USE_MOCK_DATA, supabase } from '../lib/supabase';
 
 interface Course {
   id: string;
@@ -12,6 +12,33 @@ interface Course {
   propina: number;
   multa: number;
 }
+
+const MOCK_COURSES: Course[] = [
+  {
+    id: '1',
+    nome: 'Ciências da Saúde',
+    preco_matricula: 15000,
+    preco_confirmacao: 10000,
+    propina: 18000,
+    multa: 1800
+  },
+  {
+    id: '2',
+    nome: 'Engenharia Informática',
+    preco_matricula: 18000,
+    preco_confirmacao: 12000,
+    propina: 22000,
+    multa: 2200
+  },
+  {
+    id: '3',
+    nome: 'Direito e Cidadania',
+    preco_matricula: 12000,
+    preco_confirmacao: 8000,
+    propina: 15000,
+    multa: 1500
+  }
+];
 
 export default function CursosPage() {
   const [courses, setCourses] = useState<Course[]>([]);
@@ -26,16 +53,36 @@ export default function CursosPage() {
     try {
       setLoading(true);
       setError(null);
+
+      if (USE_MOCK_DATA) {
+        await new Promise(resolve => setTimeout(resolve, 800));
+        setCourses(MOCK_COURSES);
+        setLoading(false);
+        return;
+      }
+
       const { data, error } = await supabase
         .from('courses')
         .select('*')
         .order('nome');
       
-      if (error) throw error;
+      if (error) {
+        console.error('Supabase error:', error);
+        throw error;
+      }
+      
+      if (!data || data.length === 0) {
+        console.log('Nenhum curso encontrado no Supabase para a tabela "courses". Verifique se o RLS está configurado para leitura pública.');
+      }
+
       setCourses(data || []);
-    } catch (err) {
+    } catch (err: any) {
       console.error('Erro ao carregar cursos:', err);
-      setError('Houve um problema ao carregar os cursos. Verifique sua conexão ou se a tabela existe no Supabase.');
+      if (err.message === 'Failed to fetch') {
+        setError('Erro de conexão: Não foi possível alcançar o servidor do Supabase. Verifique se as variáveis de ambiente (URL e Chave Anon) estão configuradas corretamente nas configurações do projeto.');
+      } else {
+        setError(err.message || 'Houve um problema ao carregar os cursos. Verifique sua conexão ou se a tabela existe no Supabase.');
+      }
     } finally {
       setLoading(false);
     }
@@ -50,39 +97,13 @@ export default function CursosPage() {
 
   return (
     <div className="pt-24 pb-20">
-      {/* Hero Section */}
-      <section className="bg-[#2E7D32] py-20 px-4">
-        <div className="max-w-7xl mx-auto text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="inline-flex items-center gap-2 bg-white/10 text-white px-4 py-2 rounded-full mb-6 backdrop-blur-sm"
-          >
-            <BookOpen size={18} />
-            <span className="text-sm font-semibold">Oferta Acadêmica</span>
-          </motion.div>
-          <motion.h1 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="text-4xl md:text-5xl lg:text-6xl font-black text-white mb-6 uppercase tracking-tight"
-          >
-            Nossos Cursos
-          </motion.h1>
-          <motion.p 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="text-white/80 text-xl max-w-2xl mx-auto leading-relaxed"
-          >
-            Explore nossa diversificada oferta formativa e descubra os valores e condições para o seu futuro acadêmico.
-          </motion.p>
-        </div>
-      </section>
-
       {/* Courses Grid */}
       <section className="py-20 px-4">
         <div className="max-w-7xl mx-auto">
+          <div className="mb-12 text-center">
+            <h1 className="text-4xl md:text-5xl font-black text-gray-900 mb-4 uppercase tracking-tight">Cursos Disponíveis</h1>
+            <div className="w-20 h-2 bg-[#2E7D32] mx-auto rounded-full" />
+          </div>
           {loading ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {[1, 2, 3].map((n) => (

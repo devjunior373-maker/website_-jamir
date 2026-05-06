@@ -9,7 +9,7 @@ export default function Hero() {
       {/* Background Image with Overlay */}
       <div className="absolute inset-0 z-0">
         <img
-          src="https://picsum.photos/seed/school-building/1920/1080"
+          src="/img.png"
           alt="Escola"
           className="w-full h-full object-cover"
           referrerPolicy="no-referrer"

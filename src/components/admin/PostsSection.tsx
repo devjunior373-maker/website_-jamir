@@ -17,8 +17,7 @@ export const PostsSection: React.FC<PostsSectionProps> = ({
   searchQuery
 }) => {
   const filtered = posts.filter(p => 
-    p.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    p.category?.toLowerCase().includes(searchQuery.toLowerCase())
+    p.titulo?.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   return (
@@ -26,7 +25,7 @@ export const PostsSection: React.FC<PostsSectionProps> = ({
       <thead className="bg-gray-50 border-b border-gray-200">
         <tr>
           <th className="px-6 py-4 text-xs font-black text-gray-400 uppercase tracking-widest">Título</th>
-          <th className="px-6 py-4 text-xs font-black text-gray-400 uppercase tracking-widest">Categoria</th>
+          <th className="px-6 py-4 text-xs font-black text-gray-400 uppercase tracking-widest">Status</th>
           <th className="px-6 py-4 text-xs font-black text-gray-400 uppercase tracking-widest">Data</th>
           <th className="px-6 py-4 text-xs font-black text-gray-400 uppercase tracking-widest text-right">Ações</th>
         </tr>
@@ -34,9 +33,13 @@ export const PostsSection: React.FC<PostsSectionProps> = ({
       <tbody className="divide-y divide-gray-100">
         {filtered.map(post => (
           <tr key={post.id} className="hover:bg-gray-50 transition-colors">
-            <td className="px-6 py-4 font-bold text-gray-900">{post.title}</td>
-            <td className="px-6 py-4"><span className="bg-green-50 text-[#2E7D32] text-[10px] font-black px-2 py-1 rounded-[5px] uppercase">{post.category}</span></td>
-            <td className="px-6 py-4 text-sm text-gray-500">{new Date(post.date).toLocaleDateString()}</td>
+            <td className="px-6 py-4 font-bold text-gray-900">{post.titulo}</td>
+            <td className="px-6 py-4">
+              <span className={`text-[10px] font-black px-2 py-1 rounded-[5px] uppercase ${post.publicado ? 'bg-green-50 text-[#2E7D32]' : 'bg-gray-100 text-gray-400'}`}>
+                {post.publicado ? 'Publicado' : 'Rascunho'}
+              </span>
+            </td>
+            <td className="px-6 py-4 text-sm text-gray-500">{new Date(post.created_at).toLocaleDateString()}</td>
             <td className="px-6 py-4 text-right space-x-2">
               <button 
                 onClick={() => { setEditingItem(post); setIsModalOpen(true); }} 

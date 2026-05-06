@@ -3,20 +3,20 @@ import { createClient } from '@supabase/supabase-js';
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-const isConfigured = !!supabaseUrl && !!supabaseAnonKey;
+// Check if Supabase is properly configured
+const isConfigured = !!supabaseUrl && !!supabaseAnonKey && supabaseUrl !== 'YOUR_SUPABASE_URL';
 
-if (!isConfigured) {
-  console.error(
-    'Supabase environment variables are missing! ' +
-    'Please set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY in your project settings.'
-  );
+// Export a flag to easily switch between Supabase and Mock Data
+export const USE_MOCK_DATA = !isConfigured;
+
+if (USE_MOCK_DATA) {
+  console.info('Using Mock Data: Supabase is not configured or deactivated.');
 }
 
-// Use a fallback URL to prevent createClient from throwing an error at module load time
-// but specify that it is not configured.
 export const supabase = createClient(
   supabaseUrl || 'https://missing-config.supabase.co',
-  supabaseAnonKey || 'missing-config'
+  supabaseAnonKey || 'missing-key'
 );
 
 export { isConfigured };
+
