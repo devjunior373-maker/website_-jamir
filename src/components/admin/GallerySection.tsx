@@ -1,17 +1,32 @@
 import React from 'react';
 import { Image as ImageIcon, Trash2 } from 'lucide-react';
+import { Skeleton } from '../ui/Skeleton';
 
 interface GallerySectionProps {
   gallery: any[];
   setIsModalOpen: (open: boolean) => void;
   setDeleteConfirm: (id: string) => void;
   searchQuery: string;
+  loading?: boolean;
 }
 
-export const GallerySection: React.FC<GallerySectionProps> = ({ gallery, setIsModalOpen, setDeleteConfirm, searchQuery }) => {
+export const GallerySection: React.FC<GallerySectionProps> = ({ gallery, setIsModalOpen, setDeleteConfirm, searchQuery, loading }) => {
   const filtered = gallery.filter(img => 
     img.titulo?.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  if (loading) {
+    return (
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 p-8">
+        {[1, 2, 3, 4].map(n => (
+          <div key={n} className="space-y-4">
+            <Skeleton className="w-full h-48 rounded-[5px]" />
+            <Skeleton className="h-4 w-3/4" />
+          </div>
+        ))}
+      </div>
+    );
+  }
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 p-8">

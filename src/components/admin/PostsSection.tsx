@@ -1,5 +1,6 @@
 import React from 'react';
 import { Edit, Trash2 } from 'lucide-react';
+import { Skeleton } from '../ui/Skeleton';
 
 interface PostsSectionProps {
   posts: any[];
@@ -7,6 +8,7 @@ interface PostsSectionProps {
   setIsModalOpen: (open: boolean) => void;
   setDeleteConfirm: (id: string) => void;
   searchQuery: string;
+  loading?: boolean;
 }
 
 export const PostsSection: React.FC<PostsSectionProps> = ({
@@ -14,14 +16,43 @@ export const PostsSection: React.FC<PostsSectionProps> = ({
   setEditingItem,
   setIsModalOpen,
   setDeleteConfirm,
-  searchQuery
+  searchQuery,
+  loading
 }) => {
   const filtered = posts.filter(p => 
     p.titulo?.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  if (loading) {
+    return (
+      <div className="w-full overflow-x-auto">
+        <table className="w-full text-left min-w-[600px]">
+          <thead className="bg-gray-50 border-b border-gray-200">
+            <tr>
+              <th className="px-6 py-4 text-xs font-black text-gray-400 uppercase tracking-widest">Título</th>
+              <th className="px-6 py-4 text-xs font-black text-gray-400 uppercase tracking-widest">Status</th>
+              <th className="px-6 py-4 text-xs font-black text-gray-400 uppercase tracking-widest">Data</th>
+              <th className="px-6 py-4 text-xs font-black text-gray-400 uppercase tracking-widest text-right">Ações</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-gray-100">
+            {[1, 2, 3, 4].map(n => (
+              <tr key={n}>
+                <td className="px-6 py-5"><Skeleton className="h-4 w-48" /></td>
+                <td className="px-6 py-5"><Skeleton className="h-4 w-20" /></td>
+                <td className="px-6 py-5"><Skeleton className="h-4 w-24" /></td>
+                <td className="px-6 py-5 text-right"><Skeleton className="h-6 w-16 ml-auto" /></td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    );
+  }
+
   return (
-    <table className="w-full text-left">
+    <div className="w-full overflow-x-auto">
+      <table className="w-full text-left min-w-[600px]">
       <thead className="bg-gray-50 border-b border-gray-200">
         <tr>
           <th className="px-6 py-4 text-xs font-black text-gray-400 uppercase tracking-widest">Título</th>
@@ -58,5 +89,6 @@ export const PostsSection: React.FC<PostsSectionProps> = ({
         ))}
       </tbody>
     </table>
+    </div>
   );
 };

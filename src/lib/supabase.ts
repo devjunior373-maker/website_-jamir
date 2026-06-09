@@ -4,15 +4,23 @@ export const isConfigured = false;
 
 // Dummy client to prevent import errors in the rest of the application
 export const supabase = {
-  from: () => ({
-    select: () => ({
-      order: () => ({
-        limit: () => Promise.resolve({ data: [], error: null }),
-        then: () => Promise.resolve({ data: [], error: null })
-      }),
-      eq: () => Promise.resolve({ data: [], error: null })
-    })
-  }),
+  from: () => {
+    const chain = {
+      select: () => chain,
+      order: () => chain,
+      limit: () => chain,
+      eq: () => chain,
+      insert: () => chain,
+      update: () => chain,
+      upsert: () => chain,
+      delete: () => chain,
+      single: () => chain,
+      maybeSingle: () => chain,
+      then: (resolve: any) => resolve({ data: [], error: null }),
+      catch: (reject: any) => reject(new Error('Database disabled')),
+    };
+    return chain;
+  },
   auth: {
     onAuthStateChange: () => ({ data: { subscription: { unsubscribe: () => {} } } }),
     getSession: () => Promise.resolve({ data: { session: null } }),

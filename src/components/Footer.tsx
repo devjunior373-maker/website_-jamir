@@ -60,7 +60,7 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12 mb-16">
           
           {/* Brand Column */}
-          <div className="lg:col-span-4">
+          <div className="lg:col-span-3">
             <div className="flex items-center gap-3 mb-6">
               <img 
                 src="/logo.png" 
@@ -89,7 +89,7 @@ export default function Footer() {
 
           {/* Links Columns */}
           {footerLinks.map((group, index) => (
-            <div key={index} className="lg:col-span-2">
+            <div key={index} className="lg:col-span-3">
               <h4 className="text-white font-bold text-lg mb-6">{group.title}</h4>
               <ul className="space-y-4">
                 {group.links.map((link, linkIndex) => (
@@ -107,21 +107,7 @@ export default function Footer() {
             </div>
           ))}
 
-          {/* Newsletter Column */}
-          <div className="lg:col-span-2">
-            <h4 className="text-white font-bold text-lg mb-6">Newsletter</h4>
-            <p className="text-sm text-gray-400 mb-6">Receba as últimas novidades e eventos diretamente no seu e-mail.</p>
-            <form className="space-y-3">
-              <input 
-                type="email" 
-                placeholder="Seu e-mail"
-                className="w-full bg-gray-800 border border-gray-700 rounded-[5px] px-4 py-3 text-sm focus:outline-none focus:border-[#2E7D32] transition-colors"
-              />
-              <button className="w-full bg-[#2E7D32] text-white py-3 rounded-[5px] font-bold text-sm hover:bg-[#1B5E20] transition-colors shadow-lg">
-                Subscrever
-              </button>
-            </form>
-          </div>
+
         </div>
 
         {/* Bottom Bar */}

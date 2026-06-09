@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Image as ImageIcon, Maximize2, X } from 'lucide-react';
 import { USE_MOCK_DATA, supabase } from '../lib/supabase';
+import { Skeleton } from '../components/ui/Skeleton';
 
 const MOCK_GALLERY = [
   { id: '1', titulo: 'Nossas Instalações', imagem: 'https://images.unsplash.com/photo-1541339907198-e08756ebafe3?q=80&w=1000' },
@@ -22,6 +23,7 @@ export default function GalleryPage() {
       setLoading(true);
 
       if (USE_MOCK_DATA) {
+        await new Promise(resolve => setTimeout(resolve, 4000));
         setImages(MOCK_GALLERY);
         setLoading(false);
         return;
@@ -82,41 +84,50 @@ export default function GalleryPage() {
       {/* Grid */}
       <section className="max-w-7xl mx-auto px-4 py-16">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-          <AnimatePresence mode="popLayout">
-            {images.map((img) => (
-              <motion.div
-                layout
-                key={img.id}
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.9 }}
-                whileHover={{ y: -5 }}
-                className="group relative cursor-pointer"
-                onClick={() => setSelectedImage(img)}
-              >
-                <div className="relative overflow-hidden rounded-[5px] aspect-[4/3] shadow-md border border-gray-100">
-                  {img.imagem ? (
-                    <img 
-                      src={img.imagem} 
-                      alt={img.titulo} 
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                      referrerPolicy="no-referrer"
-                    />
-                  ) : (
-                    <div className="w-full h-full bg-gray-100 flex items-center justify-center">
-                      <ImageIcon className="text-gray-300" size={48} />
+          {loading ? (
+            Array.from({ length: 6 }).map((_, i) => (
+              <div key={i} className="space-y-4">
+                <Skeleton className="aspect-[4/3] w-full" />
+                <Skeleton className="h-6 w-3/4" />
+              </div>
+            ))
+          ) : (
+            <AnimatePresence mode="popLayout">
+              {images.map((img) => (
+                <motion.div
+                  layout
+                  key={img.id}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.9 }}
+                  whileHover={{ y: -5 }}
+                  className="group relative cursor-pointer"
+                  onClick={() => setSelectedImage(img)}
+                >
+                  <div className="relative overflow-hidden rounded-[5px] aspect-[4/3] shadow-md border border-gray-100">
+                    {img.imagem ? (
+                      <img 
+                        src={img.imagem} 
+                        alt={img.titulo} 
+                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                        referrerPolicy="no-referrer"
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-gray-100 flex items-center justify-center">
+                        <ImageIcon className="text-gray-300" size={48} />
+                      </div>
+                    )}
+                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                      <Maximize2 className="text-white" size={32} />
                     </div>
-                  )}
-                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                    <Maximize2 className="text-white" size={32} />
                   </div>
-                </div>
-                <div className="mt-4">
-                  <h3 className="text-lg font-bold text-gray-900 mt-2 line-clamp-1">{img.titulo}</h3>
-                </div>
-              </motion.div>
-            ))}
-          </AnimatePresence>
+                  <div className="mt-4">
+                    <h3 className="text-lg font-bold text-gray-900 mt-2 line-clamp-1">{img.titulo}</h3>
+                  </div>
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          )}
         </div>
       </section>
 

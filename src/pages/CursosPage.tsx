@@ -3,6 +3,7 @@ import { motion } from 'motion/react';
 import { BookOpen, ArrowRight, GraduationCap, Loader2, Coins, Receipt, CreditCard } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { USE_MOCK_DATA, supabase } from '../lib/supabase';
+import { Skeleton } from '../components/ui/Skeleton';
 
 interface Course {
   id: string;
@@ -55,7 +56,7 @@ export default function CursosPage() {
       setError(null);
 
       if (USE_MOCK_DATA) {
-        await new Promise(resolve => setTimeout(resolve, 800));
+        await new Promise(resolve => setTimeout(resolve, 4000));
         setCourses(MOCK_COURSES);
         setLoading(false);
         return;
@@ -96,27 +97,46 @@ export default function CursosPage() {
   };
 
   return (
-    <div className="pt-24 pb-20">
+    <div className="pt-12 sm:pt-16 pb-20">
       {/* Courses Grid */}
-      <section className="py-20 px-4">
+      <section className="pt-8 pb-20 px-4">
         <div className="max-w-7xl mx-auto">
-          <div className="mb-12 text-center">
-            <h1 className="text-4xl md:text-5xl font-black text-gray-900 mb-4 uppercase tracking-tight">Cursos Disponíveis</h1>
-            <div className="w-20 h-2 bg-[#2E7D32] mx-auto rounded-full" />
+          <div className="mb-12 text-left">
+            <h1 className="text-2xl md:text-3xl font-black text-gray-900 mb-4 uppercase tracking-tight">Cursos Disponíveis</h1>
+            <div className="w-20 h-2 bg-[#2E7D32] rounded-full" />
           </div>
+
           {loading ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {[1, 2, 3].map((n) => (
-                <div key={n} className="bg-white border border-gray-100 rounded-[5px] p-8 animate-pulse">
-                  <div className="w-14 h-14 bg-gray-200 rounded-[5px] mb-6" />
-                  <div className="h-6 bg-gray-200 rounded w-3/4 mb-6" />
-                  <div className="space-y-4">
-                    <div className="h-12 bg-gray-100 rounded-[5px]" />
-                    <div className="h-12 bg-gray-100 rounded-[5px]" />
-                    <div className="h-12 bg-gray-100 rounded-[5px]" />
-                  </div>
-                </div>
-              ))}
+            <div className="bg-white border border-gray-100 rounded-[5px] overflow-hidden">
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Curso</th>
+                      <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Matrícula</th>
+                      <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Confirmação</th>
+                      <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Propina</th>
+                      <th className="px-6 py-4 text-right text-xs font-bold text-gray-500 uppercase tracking-wider">Ações</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-100">
+                    {[1, 2, 3, 4, 5].map((n) => (
+                      <tr key={n}>
+                        <td className="px-6 py-6">
+                          <div className="flex items-center gap-4">
+                            <Skeleton className="w-10 h-10 hidden sm:block" />
+                            <Skeleton className="h-4 w-48" />
+                          </div>
+                        </td>
+                        <td className="px-6 py-6"><Skeleton className="h-4 w-24" /></td>
+                        <td className="px-6 py-6"><Skeleton className="h-4 w-24" /></td>
+                        <td className="px-6 py-6"><Skeleton className="h-4 w-24" /></td>
+                        <td className="px-6 py-6 text-right"><Skeleton className="h-9 w-24 ml-auto" /></td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
           ) : error ? (
             <div className="text-center py-20">
@@ -131,62 +151,60 @@ export default function CursosPage() {
               </div>
             </div>
           ) : courses.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {courses.map((course, index) => (
-                <motion.div
-                  key={course.id}
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: index * 0.1 }}
-                  className="group bg-white border border-gray-100 rounded-[5px] overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col h-full"
-                >
-                  <div className="p-8 flex-grow">
-                    <div className="w-14 h-14 bg-green-50 rounded-[5px] flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-                      <GraduationCap className="text-[#2E7D32]" size={28} />
-                    </div>
-                    <h3 className="text-2xl font-black text-gray-900 mb-6 group-hover:text-[#2E7D32] transition-colors uppercase leading-tight">
-                      {course.nome}
-                    </h3>
-                    
-                    <div className="space-y-4">
-                      <div className="flex items-center justify-between p-3 bg-gray-50 rounded-[5px]">
-                        <div className="flex items-center gap-2 text-gray-600 text-sm">
-                          <Receipt size={16} />
-                          <span>Matrícula</span>
-                        </div>
-                        <span className="font-bold text-gray-900">{formatCurrency(course.preco_matricula)}</span>
-                      </div>
-                      
-                      <div className="flex items-center justify-between p-3 bg-gray-50 rounded-[5px]">
-                        <div className="flex items-center gap-2 text-gray-600 text-sm">
-                          <CreditCard size={16} />
-                          <span>Propina</span>
-                        </div>
-                        <span className="font-bold text-gray-900">{formatCurrency(course.propina)}</span>
-                      </div>
-
-                      <div className="flex items-center justify-between p-3 bg-gray-50 rounded-[5px]">
-                        <div className="flex items-center gap-2 text-gray-600 text-sm">
-                          <Coins size={16} />
-                          <span>Confirmação</span>
-                        </div>
-                        <span className="font-bold text-gray-900">{formatCurrency(course.preco_confirmacao)}</span>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div className="p-6 border-t border-gray-50 bg-gray-50/50 flex items-center justify-between group-hover:bg-green-50 transition-colors">
-                    <Link 
-                      to="/contacto" 
-                      className="flex items-center gap-2 text-[#2E7D32] font-black text-sm uppercase tracking-wider"
-                    >
-                      Solicitar Info
-                      <ArrowRight size={16} />
-                    </Link>
-                  </div>
-                </motion.div>
-              ))}
+            <div className="bg-white border border-gray-100 rounded-[5px] overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead className="bg-[#2E7D32]">
+                    <tr>
+                      <th className="px-6 py-5 text-left text-xs font-black text-white uppercase tracking-widest">Curso</th>
+                      <th className="px-6 py-5 text-left text-xs font-black text-white uppercase tracking-widest">Matrícula</th>
+                      <th className="px-6 py-5 text-left text-xs font-black text-white uppercase tracking-widest">Confirmação</th>
+                      <th className="px-6 py-5 text-left text-xs font-black text-white uppercase tracking-widest">Propina</th>
+                      <th className="px-6 py-5 text-right text-xs font-black text-white uppercase tracking-widest">Informações</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-100">
+                    {courses.map((course, index) => (
+                      <motion.tr
+                        key={course.id}
+                        initial={{ opacity: 0, x: -10 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: index * 0.05 }}
+                        className="hover:bg-green-50/30 transition-colors group"
+                      >
+                        <td className="px-6 py-6">
+                          <div className="flex items-center gap-4">
+                            <div className="hidden sm:flex w-10 h-10 bg-green-50 rounded-[5px] items-center justify-center text-[#2E7D32]">
+                              <GraduationCap size={20} />
+                            </div>
+                            <span className="font-black text-gray-900 group-hover:text-[#2E7D32] transition-colors uppercase">
+                              {course.nome}
+                            </span>
+                          </div>
+                        </td>
+                        <td className="px-6 py-6 font-bold text-gray-600">
+                          {formatCurrency(course.preco_matricula)}
+                        </td>
+                        <td className="px-6 py-6 font-bold text-gray-600">
+                          {formatCurrency(course.preco_confirmacao)}
+                        </td>
+                        <td className="px-6 py-6 font-bold text-gray-600">
+                          {formatCurrency(course.propina)}
+                        </td>
+                        <td className="px-6 py-6 text-right">
+                          <Link 
+                            to="/sobre" 
+                            className="inline-flex items-center gap-2 bg-[#2E7D32] text-white px-4 py-2 rounded-[5px] font-black text-xs uppercase tracking-wider hover:bg-[#1B5E20] transition-all shadow-sm active:scale-95 group"
+                          >
+                            <span>Saber Mais</span>
+                            <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
+                          </Link>
+                        </td>
+                      </motion.tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
           ) : (
             <div className="text-center py-20 bg-gray-50 rounded-[5px] border border-dashed border-gray-200">
@@ -211,10 +229,10 @@ export default function CursosPage() {
               As inscrições para o próximo ano letivo já estão abertas. Garanta a sua vaga no COMPLEXO JAMIR hoje mesmo.
             </p>
             <Link 
-              to="/contacto"
+              to="/sobre"
               className="inline-flex items-center gap-3 bg-[#2E7D32] text-white px-10 py-5 rounded-[5px] font-black text-xl hover:bg-[#1B5E20] transition-all relative z-10 shadow-2xl active:scale-95 group"
             >
-              Matricular-se Agora
+              Sobre o Instituto
               <ArrowRight className="group-hover:translate-x-2 transition-transform" />
             </Link>
           </motion.div>

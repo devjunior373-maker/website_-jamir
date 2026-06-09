@@ -27,23 +27,16 @@ export default function CTA() {
               </motion.h2>
               
               <div className="flex flex-col sm:flex-row gap-4">
-                <Link to="/contacto">
+                <Link to="/cursos">
                   <motion.button 
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                     className="w-full bg-white text-[#2E7D32] px-8 py-4 rounded-[5px] font-black text-lg flex items-center justify-center gap-2 shadow-lg transition-all"
                   >
-                    Inscrever Agora
+                    Explorar Cursos
                     <ArrowRight size={20} />
                   </motion.button>
                 </Link>
-                <motion.button 
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="bg-transparent border-2 border-white/30 text-white px-8 py-4 rounded-[5px] font-bold text-lg hover:bg-white/10 transition-all flex items-center justify-center gap-2"
-                >
-                  Falar com Consultor
-                </motion.button>
               </div>
             </div>
 
