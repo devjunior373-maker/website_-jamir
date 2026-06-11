@@ -13,62 +13,62 @@ export default function CTA() {
             <div className="absolute inset-0" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)', backgroundSize: '40px 40px' }} />
           </div>
           
-          <div className="relative z-10 flex flex-col lg:flex-row items-center">
+          <div className="relative z-10 flex flex-col lg:flex-row items-stretch">
             {/* Left Content */}
-            <div className="p-10 lg:p-20 lg:w-3/5 text-white">
+            <div className="p-6 sm:p-10 lg:p-16 lg:w-3/5 text-white flex flex-col justify-center">
               <motion.h2 
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 15 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                className="text-4xl md:text-5xl font-black mb-10 leading-tight tracking-tight"
+                className="text-2xl sm:text-3xl lg:text-4xl font-black mb-6 lg:mb-8 leading-tight tracking-tight uppercase"
               >
                 PRONTO PARA COMEÇAR A <br />
                 <span className="text-green-300">JORNADA DO SEU FILHO?</span>
               </motion.h2>
               
               <div className="flex flex-col sm:flex-row gap-4">
-                <Link to="/cursos">
+                <Link to="/cursos" className="w-full sm:w-auto">
                   <motion.button 
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
-                    className="w-full bg-white text-[#2E7D32] px-8 py-4 rounded-[5px] font-black text-lg flex items-center justify-center gap-2 shadow-lg transition-all"
+                    className="w-full sm:w-auto bg-white text-[#2E7D32] px-6 py-3.5 rounded-[5px] font-black text-sm flex items-center justify-center gap-2 shadow-md transition-all uppercase tracking-wider"
                   >
                     Explorar Cursos
-                    <ArrowRight size={20} />
+                    <ArrowRight size={16} />
                   </motion.button>
                 </Link>
               </div>
             </div>
 
-            {/* Right Info Box */}
-            <div className="lg:w-2/5 w-full bg-[#1B5E20] p-10 lg:p-20 flex flex-col justify-center gap-8">
-              <div className="flex items-start gap-4 text-white">
-                <div className="w-12 h-12 bg-white/10 rounded-[5px] flex items-center justify-center flex-shrink-0">
-                  <Phone size={24} />
+            {/* Right Info Box - Horizontal grid on mobile/tablet, vertical stack on desktop */}
+            <div className="lg:w-2/5 w-full bg-[#1B5E20] p-6 sm:p-10 lg:p-16 flex flex-col sm:flex-row lg:flex-col justify-between lg:justify-center items-stretch sm:items-center lg:items-stretch gap-6 sm:gap-4 lg:gap-8 border-t lg:border-t-0 lg:border-l border-white/10">
+              <div className="flex items-center gap-3 text-white flex-1 min-w-[120px]">
+                <div className="w-10 h-10 bg-white/10 rounded-[5px] flex items-center justify-center flex-shrink-0">
+                  <Phone size={18} />
                 </div>
                 <div>
-                  <p className="text-green-300 text-sm font-bold uppercase tracking-widest mb-1">Ligue-nos</p>
-                  <p className="text-xl font-bold">+244 923 000 000</p>
+                  <p className="text-green-300 text-[9px] font-black uppercase tracking-widest leading-none mb-1">Ligue-nos</p>
+                  <p className="text-sm sm:text-base font-extrabold leading-tight whitespace-nowrap">+244 923 000 000</p>
                 </div>
               </div>
 
-              <div className="flex items-start gap-4 text-white">
-                <div className="w-12 h-12 bg-white/10 rounded-[5px] flex items-center justify-center flex-shrink-0">
-                  <Mail size={24} />
+              <div className="flex items-center gap-3 text-white flex-1 min-w-[120px]">
+                <div className="w-10 h-10 bg-white/10 rounded-[5px] flex items-center justify-center flex-shrink-0">
+                  <Mail size={18} />
                 </div>
                 <div>
-                  <p className="text-green-300 text-sm font-bold uppercase tracking-widest mb-1">E-mail</p>
-                  <p className="text-xl font-bold">geral@jamir.ao</p>
+                  <p className="text-green-300 text-[9px] font-black uppercase tracking-widest leading-none mb-1">E-mail</p>
+                  <p className="text-sm sm:text-base font-extrabold leading-tight whitespace-nowrap">geral@jamir.ao</p>
                 </div>
               </div>
 
-              <div className="flex items-start gap-4 text-white">
-                <div className="w-12 h-12 bg-white/10 rounded-[5px] flex items-center justify-center flex-shrink-0">
-                  <MapPin size={24} />
+              <div className="flex items-center gap-3 text-white flex-1 min-w-[120px]">
+                <div className="w-10 h-10 bg-white/10 rounded-[5px] flex items-center justify-center flex-shrink-0">
+                  <MapPin size={18} />
                 </div>
                 <div>
-                  <p className="text-green-300 text-sm font-bold uppercase tracking-widest mb-1">Localização</p>
-                  <p className="text-xl font-bold">Luanda, Angola</p>
+                  <p className="text-green-300 text-[9px] font-black uppercase tracking-widest leading-none mb-1">Localização</p>
+                  <p className="text-sm sm:text-base font-extrabold leading-tight whitespace-nowrap">Luanda, Angola</p>
                 </div>
               </div>
             </div>

@@ -63,15 +63,7 @@ export default function SchoolHeader() {
       items: [
         { name: "Nossos Cursos", href: "/cursos", icon: <GraduationCap size={18} /> },
         { name: "Pré-Inscrição Online", href: "/pre-inscricao", icon: <FileText size={18} /> },
-        { name: "Portal do Aluno", href: "/login", icon: <LogIn size={18} /> },
-      ]
-    },
-    {
-      title: "Área do Aluno",
-      items: [
         { name: "Portal Estudantil", href: "/login", icon: <LogIn size={18} /> },
-        { name: "Consultar Notas", href: "/login", icon: <GraduationCap size={18} /> },
-        { name: "Pagamentos Online", href: "/login", icon: <CreditCard size={18} /> },
       ]
     }
   ];
@@ -81,26 +73,24 @@ export default function SchoolHeader() {
 
   const TopBar = () => (
     <div className="bg-[#2E7D32] text-white shadow-inner">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-1.5 sm:py-2">
-        <div className="flex flex-col sm:flex-row justify-between items-center text-[10px] sm:text-[11px] font-bold uppercase tracking-wider gap-1.5 sm:gap-3">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2">
+        <div className="flex justify-between items-center text-[10px] sm:text-[11px] font-bold uppercase tracking-wider">
           {/* Left Side: Location */}
-          <div className="flex items-center gap-1.5 text-white order-2 sm:order-1">
-            <MapPin size={10} className="text-green-200 sm:w-3 sm:h-3" />
+          <div className="flex items-center gap-1.5 text-white">
+            <MapPin size={11} className="text-green-200" />
             <span className="opacity-90">Luanda, Angola</span>
           </div>
 
           {/* Right Side: Contacts */}
-          <div className="flex items-center justify-between w-full sm:w-auto gap-4 sm:gap-6 order-1 sm:order-2">
-            <div className="flex items-center gap-3 sm:gap-6">
-              <a href="tel:+244923000000" className="flex items-center gap-1.5 hover:text-green-200 transition-colors">
-                <Phone size={10} className="text-green-200 sm:w-3 sm:h-3" />
-                <span className="inline">+244 923 000 000</span>
-              </a>
-              <a href="mailto:info@complexojamir.com" className="hidden md:flex items-center gap-1.5 hover:text-green-200 transition-colors">
-                <Mail size={10} className="text-green-200 sm:w-3 sm:h-3" />
-                info@complexojamir.com
-              </a>
-            </div>
+          <div className="flex items-center gap-4 sm:gap-6">
+            <a href="tel:+244923000000" className="flex items-center gap-1.5 hover:text-green-200 transition-colors">
+              <Phone size={11} className="text-green-200" />
+              <span>+244 923 000 000</span>
+            </a>
+            <a href="mailto:info@complexojamir.com" className="hidden sm:flex items-center gap-1.5 hover:text-green-200 transition-colors">
+              <Mail size={11} className="text-green-200" />
+              <span className="opacity-95">info@complexojamir.com</span>
+            </a>
           </div>
         </div>
       </div>
@@ -108,7 +98,7 @@ export default function SchoolHeader() {
   );
 
   return (
-    <div className="w-full z-50 sticky top-0">
+    <div className="w-full z-50">
       <TopBar />
 
       <motion.header
@@ -118,7 +108,7 @@ export default function SchoolHeader() {
           boxShadow: isScrolled ? "0 4px 6px -1px rgb(0 0 0 / 0.1)" : "0 0 0 0 rgb(0 0 0 / 0)"
         }}
         transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
-        className="w-full bg-white border-b border-gray-100"
+        className="w-full bg-white border-b border-gray-100 sticky top-0 z-50"
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-14 sm:h-16">
