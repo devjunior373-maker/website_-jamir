@@ -71,36 +71,8 @@ export default function SchoolHeader() {
   // Components moved inside for easier access to state if needed, 
   // but could be outside for purity. Keeping inside for cohesion in this refactor.
 
-  const TopBar = () => (
-    <div className="bg-[#2E7D32] text-white shadow-inner">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2">
-        <div className="flex justify-between items-center text-[10px] sm:text-[11px] font-bold uppercase tracking-wider">
-          {/* Left Side: Location */}
-          <div className="flex items-center gap-1.5 text-white">
-            <MapPin size={11} className="text-green-200" />
-            <span className="opacity-90">Luanda, Angola</span>
-          </div>
-
-          {/* Right Side: Contacts */}
-          <div className="flex items-center gap-4 sm:gap-6">
-            <a href="tel:+244923000000" className="flex items-center gap-1.5 hover:text-green-200 transition-colors">
-              <Phone size={11} className="text-green-200" />
-              <span>+244 923 000 000</span>
-            </a>
-            <a href="mailto:info@complexojamir.com" className="hidden sm:flex items-center gap-1.5 hover:text-green-200 transition-colors">
-              <Mail size={11} className="text-green-200" />
-              <span className="opacity-95">info@complexojamir.com</span>
-            </a>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-
   return (
     <div className="w-full z-50">
-      <TopBar />
-
       <motion.header
         animate={{ 
           paddingTop: isScrolled ? "4px" : "8px",
