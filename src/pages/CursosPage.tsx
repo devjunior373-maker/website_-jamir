@@ -230,9 +230,9 @@ export default function CursosPage() {
             </p>
             <Link 
               to="/sobre"
-              className="inline-flex items-center gap-3 bg-[#2E7D32] text-white px-10 py-5 rounded-[5px] font-black text-xl hover:bg-[#1B5E20] transition-all relative z-10 shadow-2xl active:scale-95 group"
+              className="inline-flex items-center gap-3 bg-[#2E7D32] text-white px-10 py-5 rounded-[5px] font-black text-xl hover:bg-[#1B5E20] transition-all relative z-10 shadow-2xl active:scale-95 group uppercase"
             >
-              Sobre o Instituto
+              SOBRE O INSTITUTO
               <ArrowRight className="group-hover:translate-x-2 transition-transform" />
             </Link>
           </motion.div>

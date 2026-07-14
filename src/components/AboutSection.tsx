@@ -25,9 +25,10 @@ export default function AboutSection() {
               <div className="absolute -top-6 -left-6 w-24 h-24 border-t-4 border-l-4 border-[#2E7D32]/20 rounded-tl-[10px]" />
               
               <img 
-                src="https://images.unsplash.com/photo-1541339907198-e08756dedf3f?q=80&w=1200" 
+                src="https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&fit=crop&w=800&q=75" 
                 alt="JAMIR Campus Life" 
                 className="w-full h-[20rem] sm:h-[32rem] object-cover rounded-[5px] shadow-2xl relative z-10"
+                loading="lazy"
                 referrerPolicy="no-referrer"
               />
 

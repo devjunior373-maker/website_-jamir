@@ -5,12 +5,12 @@ import { USE_MOCK_DATA, supabase } from '../lib/supabase';
 import { Skeleton } from '../components/ui/Skeleton';
 
 const MOCK_GALLERY = [
-  { id: '1', titulo: 'Nossas Instalações', imagem: 'https://images.unsplash.com/photo-1541339907198-e08756ebafe3?q=80&w=1000' },
-  { id: '2', titulo: 'Pátio Principal', imagem: 'https://images.unsplash.com/photo-1562774053-701939374585?q=80&w=1000' },
-  { id: '3', titulo: 'Biblioteca Escolar', imagem: 'https://images.unsplash.com/photo-1521587760476-6c12a4b040da?q=80&w=1000' },
-  { id: '4', titulo: 'Sala de Conferências', imagem: 'https://images.unsplash.com/photo-1431540015161-0bf868a2d407?q=80&w=1000' },
-  { id: '5', titulo: 'Área Desportiva', imagem: 'https://images.unsplash.com/photo-1546519638-68e109498ffc?q=80&w=1000' },
-  { id: '6', titulo: 'Laboratório de Química', imagem: 'https://images.unsplash.com/photo-1532094349884-543bc11b234d?q=80&w=1000' }
+  { id: '1', titulo: 'Nossas Instalações', imagem: 'https://images.unsplash.com/photo-1541339907198-e08756ebafe3?auto=format&fit=crop&w=600&q=75' },
+  { id: '2', titulo: 'Pátio Principal', imagem: 'https://images.unsplash.com/photo-1562774053-701939374585?auto=format&fit=crop&w=600&q=75' },
+  { id: '3', titulo: 'Biblioteca Escolar', imagem: 'https://images.unsplash.com/photo-1521587760476-6c12a4b040da?auto=format&fit=crop&w=600&q=75' },
+  { id: '4', titulo: 'Sala de Conferências', imagem: 'https://images.unsplash.com/photo-1431540015161-0bf868a2d407?auto=format&fit=crop&w=600&q=75' },
+  { id: '5', titulo: 'Área Desportiva', imagem: 'https://images.unsplash.com/photo-1546519638-68e109498ffc?auto=format&fit=crop&w=600&q=75' },
+  { id: '6', titulo: 'Laboratório de Química', imagem: 'https://images.unsplash.com/photo-1532094349884-543bc11b234d?auto=format&fit=crop&w=600&q=75' }
 ];
 
 export default function GalleryPage() {
@@ -110,6 +110,7 @@ export default function GalleryPage() {
                         src={img.imagem} 
                         alt={img.titulo} 
                         className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                        loading="lazy"
                         referrerPolicy="no-referrer"
                       />
                     ) : (

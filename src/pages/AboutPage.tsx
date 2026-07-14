@@ -10,9 +10,10 @@ export default function AboutPage() {
       <section className="relative py-24 bg-gray-900 overflow-hidden">
         <div className="absolute inset-0 opacity-20">
           <img 
-            src="https://picsum.photos/seed/school-building/1920/1080" 
+            src="https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&fit=crop&w=1200&q=75" 
             alt="JAMIR Building" 
             className="w-full h-full object-cover"
+            loading="lazy"
             referrerPolicy="no-referrer"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-gray-900 via-gray-900/80 to-gray-900" />
@@ -22,7 +23,7 @@ export default function AboutPage() {
           <motion.h1 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-5xl md:text-7xl font-black text-white mb-6 tracking-tight"
+            className="text-5xl md:text-7xl font-black text-white mb-6 tracking-tight uppercase"
           >
             SOBRE O <span className="text-[#2E7D32]">JAMIR</span>
           </motion.h1>
@@ -90,9 +91,10 @@ export default function AboutPage() {
             <div className="lg:w-1/2">
               <div className="relative">
                 <img 
-                  src="https://picsum.photos/seed/history/800/600" 
+                  src="https://images.unsplash.com/photo-1523050335391-4b7f32994c6d?auto=format&fit=crop&w=800&q=75" 
                   alt="JAMIR History" 
                   className="rounded-[5px] shadow-2xl"
+                  loading="lazy"
                   referrerPolicy="no-referrer"
                 />
                 <div className="absolute -bottom-8 -right-8 bg-[#2E7D32] text-white p-8 rounded-[5px] shadow-xl hidden md:block">
@@ -147,10 +149,10 @@ export default function AboutPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
             {[
-              { name: "Dr. António Silva", role: "Diretor Geral", img: "https://picsum.photos/seed/p1/400/500" },
-              { name: "Dra. Maria Santos", role: "Diretora Pedagógica", img: "https://picsum.photos/seed/p2/400/500" },
-              { name: "Eng. Paulo Jorge", role: "Coord. Inovação", img: "https://picsum.photos/seed/p3/400/500" },
-              { name: "Dra. Ana Costa", role: "Coord. Primário", img: "https://picsum.photos/seed/p4/400/500" }
+              { name: "Dr. António Silva", role: "Diretor Geral", img: "https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=400&q=75" },
+              { name: "Dra. Maria Santos", role: "Diretora Pedagógica", img: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=400&q=75" },
+              { name: "Eng. Paulo Jorge", role: "Coord. Inovação", img: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=400&q=75" },
+              { name: "Dra. Ana Costa", role: "Coord. Primário", img: "https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=400&q=75" }
             ].map((member, i) => (
               <motion.div 
                 key={i}
@@ -162,6 +164,7 @@ export default function AboutPage() {
                     src={member.img} 
                     alt={member.name} 
                     className="w-full h-[350px] object-cover transition-transform duration-500 group-hover:scale-110"
+                    loading="lazy"
                     referrerPolicy="no-referrer"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-[#2E7D32]/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6">

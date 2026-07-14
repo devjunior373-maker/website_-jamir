@@ -16,7 +16,7 @@ export const blogPosts: BlogPost[] = [
     date: "05 Abr, 2026",
     author: "Prof. Paulo Jorge",
     category: "Inovação",
-    image: "https://picsum.photos/seed/blog1/800/500"
+    image: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=600&q=75"
   },
   {
     id: 2,
@@ -25,7 +25,7 @@ export const blogPosts: BlogPost[] = [
     date: "02 Abr, 2026",
     author: "Dra. Maria Santos",
     category: "Conquistas",
-    image: "https://picsum.photos/seed/blog2/800/500"
+    image: "https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?auto=format&fit=crop&w=600&q=75"
   },
   {
     id: 3,
@@ -34,7 +34,7 @@ export const blogPosts: BlogPost[] = [
     date: "28 Mar, 2026",
     author: "Prof. Ana Costa",
     category: "Educação",
-    image: "https://picsum.photos/seed/blog3/800/500"
+    image: "https://images.unsplash.com/photo-1460661419201-fd4cecdf8a8b?auto=format&fit=crop&w=600&q=75"
   },
   {
     id: 4,
@@ -43,6 +43,6 @@ export const blogPosts: BlogPost[] = [
     date: "20 Mar, 2026",
     author: "Dr. António Silva",
     category: "Dicas",
-    image: "https://picsum.photos/seed/blog4/800/500"
+    image: "https://images.unsplash.com/photo-1506784983877-45594efa4cbe?auto=format&fit=crop&w=600&q=75"
   }
 ];

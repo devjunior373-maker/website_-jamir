@@ -19,7 +19,7 @@ export default function Footer() {
     {
       title: "Escola",
       links: [
-        { name: "Sobre Nós", href: "#" },
+        { name: "SOBRE NÓS", href: "#" },
         { name: "Nossa Missão", href: "#" },
         { name: "Equipa Docente", href: "#" },
         { name: "Carreiras", href: "#" },

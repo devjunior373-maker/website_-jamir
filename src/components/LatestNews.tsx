@@ -11,7 +11,7 @@ const MOCK_NEWS = [
     categoria: 'Avisos',
     titulo: 'Início do Ano Letivo',
     conteudo: 'Estamos preparados para receber nossos alunos com novas instalações e um corpo docente renovado para impulsionar a inovação pedagógica.',
-    imagem: 'https://images.unsplash.com/photo-1523050335391-4b7f32994c6d?q=80&w=1000',
+    imagem: 'https://images.unsplash.com/photo-1523050335391-4b7f32994c6d?auto=format&fit=crop&w=600&q=75',
     created_at: new Date().toISOString()
   },
   {
@@ -19,7 +19,7 @@ const MOCK_NEWS = [
     categoria: 'Tecnologia',
     titulo: 'Novo Laboratório de Informática',
     conteudo: 'Inauguração do novo laboratório equipado com tecnologia de ponta para preparar nossos alunos para os exigentes resultados académicos.',
-    imagem: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?q=80&w=1000',
+    imagem: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=600&q=75',
     created_at: new Date(Date.now() - 86400000).toISOString()
   },
   {
@@ -27,7 +27,7 @@ const MOCK_NEWS = [
     categoria: 'Cultura',
     titulo: 'Semana Cultural no JAMIR',
     conteudo: 'Participe da nossa tradicional semana cultural com diversas atividades, palestras, artes e talentos locais em destaque.',
-    imagem: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?q=80&w=1000',
+    imagem: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=600&q=75',
     created_at: new Date(Date.now() - 86400000 * 2).toISOString()
   }
 ];
@@ -221,6 +221,7 @@ export default function LatestNews() {
                       src={item.imagem} 
                       alt={item.titulo}
                       className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
+                      loading="lazy"
                       referrerPolicy="no-referrer"
                     />
                   ) : (
