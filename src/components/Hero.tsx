@@ -51,7 +51,7 @@ export default function Hero() {
             className="max-w-4xl"
           >
             <h1 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-white leading-tight mb-6 tracking-tight">
-              Bem-vindo ao <span className="text-[#4CAF50]">Instituto Médio</span> Politécnico Privado Jamir
+              Bem-vindo ao <span className="text-[#4CAF50]">Complexo Escolar</span> Privado Jamir
             </h1>
             
             <p className="text-base md:text-xl text-gray-200 mb-10 leading-relaxed font-normal">
